@@ -1,4 +1,6 @@
 mod configuration;
+mod controller;
+mod database;
 mod models;
 mod routes;
 mod startup;
