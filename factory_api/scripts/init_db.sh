@@ -19,7 +19,7 @@ fi
 DB_USER=postgres
 DB_PASSWORD=password
 
-DB_NAME=rust_chat
+DB_NAME=factory_ci
 DB_PORT=5432
 
 # Allow to skip Docker if a dockerized Postgres database is already running
