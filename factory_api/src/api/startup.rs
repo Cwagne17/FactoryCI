@@ -2,9 +2,10 @@ use std::net::TcpListener;
 
 use crate::api::routes::health_check;
 use actix_web::{dev::Server, web::Data, App, HttpServer};
-use sqlx::{PgPool, postgres::PgPoolOptions};
+use sqlx::{postgres::PgPoolOptions, PgPool};
+use tracing::info;
 
-use super::configuration::{Settings, DatabaseSettings};
+use super::configuration::{DatabaseSettings, Settings};
 
 pub struct Application {
     port: u16,
@@ -35,6 +36,7 @@ impl Application {
     }
 
     pub async fn run_until_stopped(self) -> Result<(), std::io::Error> {
+        info!("Server running on port: {}", self.port);
         self.server.await
     }
 }
@@ -55,6 +57,7 @@ pub fn run(
     let port = Data::new(ApplicationPort(
         listener.local_addr().expect("Cannot Get Port").port(),
     ));
+    info!("Creating Server at: {}", port.0);
     let server = HttpServer::new(move || {
         App::new()
             .service(health_check)
