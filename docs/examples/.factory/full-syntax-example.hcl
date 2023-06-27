@@ -15,13 +15,14 @@ pipeline "foo-bar" {
             branches = ["foo/*"] # Optional
         }
     }
-    stages {
-        stage1 {} # Represents a stage named "stage1" without any parameters
-        stage2 {
-            depends_on = ["stage1"] # Optional
-            namespaces = [""] # Optional Vault namespace/mount to use for this stage
+    stages = [
+        { name = "stage1" }, 
+        {
+            name = "stage2",
+            depends_on = ["stage1"],
+            namespaces = [""]
         }
-    }
+    ]
 }
 
 # Global Variable definition for all stages
