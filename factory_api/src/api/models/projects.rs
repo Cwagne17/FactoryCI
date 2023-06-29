@@ -1,6 +1,12 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+#[derive(Deserialize)]
 
-#[derive(Serialize)]
+pub struct NewProject {
+    pub url: String,
+    pub webhook_secret: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Project {
     id: String,
     url: String,
