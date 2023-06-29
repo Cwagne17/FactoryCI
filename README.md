@@ -24,11 +24,22 @@ Project Manager
 3. PUT /project?id=123
 4. DELETE /project?id=123
 
+Projects Table
+
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | id | uuid | Project ID |
+| Owner | string |
+| Project | string |
 | url | string | GitHub URL |
 | webhook_secret | string | GitHub Webhook Secret used to verify x-hub-signature-256 header |
+
+Owner Table
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| id | uuid | Owner ID |
+| name | string | Owner Name |
 
 Orchestrator
 
@@ -47,3 +58,27 @@ The build agent is an image that contains the following capabilities:
 3. Determine which pipelines are to be executed (checking out the filter stuff)
 4. Execute pipelines according to stages
 5. Execute the stages
+
+## Flows
+
+### Setting up a new project
+
+1. User creates a new project
+   1. If they are not an existing owner, create a new owner
+      1. This will authenticate them with GitHub
+   2. Sets up the webhook automatically
+
+### Running a workflow
+
+Pre-requisites: The project must exist
+
+1. Once a webhook event is recieved from GitHub, the webhook handler will queue a new workflow
+2. The orchestrator will be reading from the queue and provision a new pod to run the workflow
+   1. The pod will have an installation of the factory_agent cli tool
+3. The agent will read the project information from the database (including auth mechanism)
+4. The agent will authenticate with GitHub
+5. The agent will read the .factory directory from the repository (prior to checking out everything else)
+   1. Syntax check the .hcl files
+   2. Conditionally check whether which pipelines are to be executed
+6. Execute pipelines according to stages
+   1. Checkout code
