@@ -1,6 +1,6 @@
 use std::net::TcpListener;
 
-use crate::api::routes::health_check;
+use crate::api::{github_webhook, routes::health_check};
 use actix_web::{dev::Server, web::Data, App, HttpServer};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 use tracing::info;
@@ -61,6 +61,7 @@ pub fn run(
     let server = HttpServer::new(move || {
         App::new()
             .service(health_check)
+            .service(github_webhook)
             .app_data(connection.clone())
             .app_data(base_url.clone())
             .app_data(port.clone())
