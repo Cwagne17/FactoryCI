@@ -1,6 +1,8 @@
 use std::net::TcpListener;
 
-use crate::api::{github_webhook, routes::health_check};
+use crate::api::{
+    github_webhook, routes::delete_project, routes::get_project, routes::health_check,
+};
 use actix_web::{dev::Server, web::Data, App, HttpServer};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 use tracing::info;
@@ -62,6 +64,8 @@ pub fn run(
         App::new()
             .service(health_check)
             .service(github_webhook)
+            .service(get_project)
+            .service(delete_project)
             .app_data(connection.clone())
             .app_data(base_url.clone())
             .app_data(port.clone())
