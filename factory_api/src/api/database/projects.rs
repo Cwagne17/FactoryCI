@@ -1,4 +1,3 @@
-use anyhow::Context;
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -54,6 +53,14 @@ pub async fn insert_project(conn: &PgPool, project: Project) -> Result<(), ApiEr
     .await
     .context("Failed to insert new project")
     .map_err(ApiError::Database)?;
+    Ok(())
+}
 
+pub async fn delete_project_by_id(id: Uuid, conn: &PgPool) -> Result<(), ApiError> {
+    sqlx::query!("DELETE FROM projects WHERE id = $1", id)
+        .execute(conn)
+        .await
+        .context("Failed to delete project")
+        .map_err(ApiError::Database)?;
     Ok(())
 }

@@ -3,9 +3,10 @@ use std::str::FromStr;
 use crate::api::controller;
 use crate::api::projects::NewProject;
 use crate::api::{database, error::ApiError};
+use actix_web::web::Json;
 use actix_web::{
-    get, post,
-    web::{self, Data, Json},
+    delete, get, http, post,
+    web::{self, Data},
     HttpResponse,
 };
 use serde::Deserialize;
@@ -41,4 +42,19 @@ async fn create_project(
 ) -> Result<HttpResponse, ApiError> {
     controller::projects::create_project(project.0, &conn).await?;
     Ok(HttpResponse::Ok().finish())
+}
+
+#[delete("/projects/{id}")]
+async fn delete_project(
+    path: web::Path<String>,
+    conn: Data<PgPool>,
+) -> Result<HttpResponse, ApiError> {
+    database::projects::delete_project_by_id(
+        uuid::Uuid::from_str(&path.into_inner()).unwrap(),
+        &conn,
+    )
+    .await?;
+    Ok(HttpResponse::Ok()
+        .status(http::StatusCode::NO_CONTENT)
+        .finish())
 }

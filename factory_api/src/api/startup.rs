@@ -1,6 +1,8 @@
 use std::net::TcpListener;
 
-use crate::api::{create_project, routes::get_project, routes::health_check};
+use crate::api::{
+    routes::create_project, routes::delete_project, routes::get_project, routes::health_check,
+};
 use actix_web::{dev::Server, web::Data, App, HttpServer};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 use tracing::info;
@@ -63,6 +65,7 @@ pub fn run(
             .service(health_check)
             .service(get_project)
             .service(create_project)
+            .service(delete_project)
             .app_data(connection.clone())
             .app_data(base_url.clone())
             .app_data(port.clone())
