@@ -1,14 +1,15 @@
 use std::str::FromStr;
 
+use crate::api::controller;
+use crate::api::projects::NewProject;
+use crate::api::{database, error::ApiError};
 use actix_web::{
-    get,
-    web::{self, Data},
+    get, post,
+    web::{self, Data, Json},
     HttpResponse,
 };
 use serde::Deserialize;
 use sqlx::PgPool;
-
-use crate::api::{database, error::ApiError};
 
 #[derive(Deserialize)]
 struct GetProjectsQuery {
@@ -31,4 +32,13 @@ async fn get_project(
     }
 
     Ok(HttpResponse::Ok().json(projects))
+}
+
+#[post("/projects")]
+async fn create_project(
+    project: Json<NewProject>,
+    conn: Data<PgPool>,
+) -> Result<HttpResponse, ApiError> {
+    controller::projects::create_project(project.0, &conn).await?;
+    Ok(HttpResponse::Ok().finish())
 }

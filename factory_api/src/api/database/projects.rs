@@ -42,3 +42,18 @@ pub async fn get_all_projects(conn: &PgPool) -> Result<Vec<Project>, ApiError> {
         .collect();
     Ok(projects)
 }
+
+pub async fn insert_project(conn: &PgPool, project: Project) -> Result<(), ApiError> {
+    sqlx::query!(
+        "INSERT INTO projects (id, url, webhook_secret) VALUES ($1, $2, $3)",
+        Uuid::parse_str(&project.id()).unwrap(),
+        project.url(),
+        project.webhook_secret()
+    )
+    .execute(conn)
+    .await
+    .context("Failed to insert new project")
+    .map_err(ApiError::Database)?;
+
+    Ok(())
+}
