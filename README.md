@@ -24,6 +24,12 @@ Project Manager
 3. PUT /project?id=123
 4. DELETE /project?id=123
 
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| id | uuid | Project ID |
+| url | string | GitHub URL |
+| webhook_secret | string | GitHub Webhook Secret used to verify x-hub-signature-256 header |
+
 Orchestrator
 
 1. Queue new workflows (function called by webhook handler)
