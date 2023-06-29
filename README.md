@@ -63,6 +63,9 @@ The build agent is an image that contains the following capabilities:
 
 ### Setting up a new project
 
+Read of the repo of the owner
+
+1. User installs the GitHub app (manually)
 1. User creates a new project
    1. If they are not an existing owner, create a new owner
       1. This will authenticate them with GitHub
