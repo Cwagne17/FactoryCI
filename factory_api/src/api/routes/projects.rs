@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
 use actix_web::{
-    get,
+    delete, get, http,
     web::{self, Data},
     HttpResponse,
 };
@@ -31,4 +31,19 @@ async fn get_project(
     }
 
     Ok(HttpResponse::Ok().json(projects))
+}
+
+#[delete("/projects/{id}")]
+async fn delete_project(
+    path: web::Path<String>,
+    conn: Data<PgPool>,
+) -> Result<HttpResponse, ApiError> {
+    database::projects::delete_project_by_id(
+        uuid::Uuid::from_str(&path.into_inner()).unwrap(),
+        &conn,
+    )
+    .await?;
+    Ok(HttpResponse::Ok()
+        .status(http::StatusCode::NO_CONTENT)
+        .finish())
 }
