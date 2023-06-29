@@ -6,7 +6,7 @@ pub struct NewProject {
     pub webhook_secret: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Project {
     id: String,
     url: String,
