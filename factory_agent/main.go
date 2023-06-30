@@ -1,31 +1,47 @@
 package main
 
 import (
-	"factory_agent/pkg"
-	"io/ioutil"
+	"log"
+	"os"
+	"path/filepath"
+	"runtime"
 
-	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/mitchellh/cli"
 )
 
-type Config struct {
-	LogLevel string `hcl:"log_level"`
+func main() {
+	os.Exit(realMain())
 }
 
-func main() {
-	var inputPath = "../examples/.factory/full-syntax-example.hcl"
-	content, err := ioutil.ReadFile(inputPath)
+func realMain() int {
+	log.Printf("[INFO] Starting factory_agent")
+	log.Printf("[INFO] Go runtime verion: %s", runtime.Version())
+	log.Printf("[INFO] CLI args: %#v", os.Args)
+
+	// Load cliconfig using LoadConfig()
+	// Handle any errors
+
+	// Get the command line args
+	binName := filepath.Base(os.Args[0])
+	args := os.Args[1:]
+
+	originalWd, err := os.Getwd()
 	if err != nil {
-		panic(err)
-	}
-	file, diags := hclsyntax.ParseConfig(content, inputPath, hcl.Pos{Line: 1, Column: 1, Byte: 0})
-	if diags != nil && diags.HasErrors() {
-		println(diags.Errs()[0].Error())
+		log.Printf("[ERROR] Failed to get working directory: %s", err)
+		return 1
 	}
 
-	out, decodeErr := pkg.Decode(file.Body)
-	if decodeErr != nil {
-		println(decodeErr.Error())
+	// look into mitcheelh/cli package
+	cliRunner := &cli.CLI{
+		Args:       args,
+		HelpWriter: os.Stdout,
 	}
-	out.Execute()
+
+	exitCode, err := cliRunner.Run()
+	if err != nil {
+		log.Printf("[ERROR] Error executing CLI: %s", err.Error())
+		return 1
+	}
+
+	return exitCode
 }
