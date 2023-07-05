@@ -1,7 +1,7 @@
 # FactoryCI
 
-# THIS REPO IS DEPRECATED AND MOVED TO github.com/factorycicd
-
+# THIS REPO IS DEPRECATED AND MOVED TO [FactoryCICD Organization](https://github.com/orgs/FactoryCICD/repositories)
+)
 Rust Applications
 MySQL Database
 
